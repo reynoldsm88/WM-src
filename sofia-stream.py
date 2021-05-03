@@ -10,6 +10,8 @@ import faust
 import requests
 from requests.auth import HTTPBasicAuth
 
+from mode import Worker
+
 from sofia import *
 
 
@@ -29,7 +31,7 @@ def create_kafka_app(broker, user, pwd):
         broker=broker,
         broker_credentials=credentials,
         topic_disable_leader=True,
-        consumer_auto_offset_reset='earliest' )
+        consumer_auto_offset_reset='earliest')
 
     return app
 
@@ -82,6 +84,16 @@ def upload_sofia_output(doc_id, file, output_api, sofia_user, sofia_pass):
         print(f"Uploading of {doc_id} failed! Please re-try")
 
 
+def exit_on_connect_failure():
+    default = Worker._shutdown_loop
+
+    def exit_on_fail(self):
+        try:
+            default(self)
+        finally:
+            exit(1)
+
+
 def run_sofia_stream(kafka_broker,
                      upload_api,
                      cdr_api,
@@ -92,6 +104,8 @@ def run_sofia_stream(kafka_broker,
                      version='v1'):
     sofia = SOFIA(ontology)
 
+    # weirdness with faust in docker: https://github.com/robinhood/faust/issues/484#issue-531534054
+    exit_on_connect_failure()
     app = create_kafka_app(kafka_broker, sofia_user, sofia_pass)
     dart_update_topic = app.topic("dart.cdr.streaming.updates", key_type=str, value_type=str)
 
@@ -107,11 +121,7 @@ def run_sofia_stream(kafka_broker,
                 if output is not None:
                     upload_sofia_output(doc_id, output, upload_api, sofia_user, sofia_pass)
 
-    try:
-        app.main()
-    except ConnectionError as ce:
-        print(f'error connecting to kafka broker @ {kafka_broker} - {ce}')
-        exit(1) # exit as failed so the Docker environment can control restarts
+    app.main()
 
 
 if __name__ == '__main__':
