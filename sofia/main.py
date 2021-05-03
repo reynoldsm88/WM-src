@@ -61,12 +61,12 @@ class SOFIA:
         self.causal_index = 0
         self.ontology = ontology
         os.environ['CORENLP_HOME'] = CoreNLP
-        self.CoreNLPclient = corenlp.CoreNLPClient(annotators=['tokenize', 
-                                                               'ssplit', 
-                                                               'pos', 
-                                                               'parse', 
-                                                               'lemma', 
-                                                               'ner', 
+        self.CoreNLPclient = corenlp.CoreNLPClient(annotators=['tokenize',
+                                                               'ssplit',
+                                                               'pos',
+                                                               'parse',
+                                                               'lemma',
+                                                               'ner',
                                                                'depparse'])
 
     def get_output(self, data_extractor, file_name, scoring = False):
@@ -181,12 +181,15 @@ class SOFIA:
             data= {'entities': self.flatten([i['Entities'] for i in output]),
                          'events': self.flatten([i['Events'] for i in output]),
                          'causal': self.flatten([i['Causal'] for i in output])}
-            json.dump(data,
-                      open(f'sofia/data/{experiment}_output/{file_name}.json', 'w'))
+
+            output_file = open(f'sofia/data/{experiment}_output/{file_name}.json', 'w')
+            json.dump(data, output_file)
+            return output_file
         except:
             print("Issue with file....")
+            return None
 
-    
+
     def annotate(self, text, save= False, file_name= 'trial'):
         annotations = self.CoreNLPclient.annotate(text, output_format='json')
         #annotations = self.CoreNLPclient.annotate(text)
@@ -256,7 +259,7 @@ class SOFIA:
 
     def flatten(self, l):
         return [item for sublist in l for item in sublist]
-    
+
     def results2excel(self, output_path, results):
         variables = [i['Variables'] for i in results]
         entities = self.flatten([i['Entities'] for i in results])
