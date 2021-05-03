@@ -29,7 +29,7 @@ def create_kafka_app(broker, user, pwd):
         broker=broker,
         broker_credentials=credentials,
         topic_disable_leader=True,
-        consumer_auto_offset_reset='earliest'
+        consumer_auto_offset_reset='earliest' )
 
     return app
 
