@@ -22,20 +22,16 @@ def create_kafka_app(broker, user, pwd):
             ssl_context=ssl.create_default_context()
         )
 
-    try:
-        # create your application
-        app = faust.App(
-            'sofia',
-            autodiscover=False,
-            broker=broker,
-            broker_credentials=credentials,
-            topic_disable_leader=True,
-            consumer_auto_offset_reset='earliest'
-        )
-        return app
-    except ConnectionError as ce:
-        print(f'error connecting to kafka broker @ {broker} - {ce}')
-        exit(1) # exit as failed so the Docker environment can control restarts
+    # create your application
+    app = faust.App(
+        'sofia',
+        autodiscover=False,
+        broker=broker,
+        broker_credentials=credentials,
+        topic_disable_leader=True,
+        consumer_auto_offset_reset='earliest'
+
+    return app
 
 
 def remove_empty_lines(text_init):
@@ -111,7 +107,11 @@ def run_sofia_stream(kafka_broker,
                 if output is not None:
                     upload_sofia_output(doc_id, output, upload_api, sofia_user, sofia_pass)
 
-    app.main()
+    try:
+        app.main()
+    except ConnectionError as ce:
+        print(f'error connecting to kafka broker @ {kafka_broker} - {ce}')
+        exit(1) # exit as failed so the Docker environment can control restarts
 
 
 if __name__ == '__main__':
