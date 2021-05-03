@@ -21,4 +21,4 @@ RUN chmod -R u+x /opt/app/pkg && \
     cd /opt/app/pkg && \
     pip3 install -r requirements.txt
 
-ENTRYPOINT /bin/bash
+ENTRYPOINT /opt/app/pkg/sofia-stream.py worker
