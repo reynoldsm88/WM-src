@@ -89,9 +89,9 @@ def run_sofia_stream(kafka_broker,
                      cdr_api,
                      sofia_user,
                      sofia_pass,
-                     ontology='compositional',
-                     experiment='may2021',
-                     version='v1'):
+                     ontology,
+                     experiment,
+                     version):
     sofia = SOFIA(ontology)
 
     app = create_kafka_app(kafka_broker, sofia_user, sofia_pass)
@@ -103,7 +103,7 @@ def run_sofia_stream(kafka_broker,
         async for cdr_event in doc_stream:
             doc_id = cdr_event.key
             extracted_text = get_cdr_text(doc_id, cdr_api, sofia_user, sofia_pass)
-            print("fourth")
+            print("process_document -> main loop")
             if extracted_text is not None:
                 output = sofia.get_online_output(extracted_text, experiment=experiment, file_name=f'{doc_id}_{version}')
                 if output is not None:
