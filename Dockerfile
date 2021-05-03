@@ -6,7 +6,7 @@ ENV LC_ALL en_US.utf8
 RUN yum upgrade -y
 
 RUN yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm && \
-    yum install -y net-tools which python3 enchant && \
+    yum install -y net-tools which python3 enchant java-1.8.0-openjdk && \
     curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
     python3 get-pip.py && \
     rm get-pip.py && \

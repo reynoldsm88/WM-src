@@ -22,17 +22,20 @@ def create_kafka_app(broker, user, pwd):
             ssl_context=ssl.create_default_context()
         )
 
-    # create your application
-    app = faust.App(
-        'sofia',
-        autodiscover=False,
-        broker=broker,
-        broker_credentials=credentials,
-        topic_disable_leader=True,
-        consumer_auto_offset_reset='earliest'
-    )
-
-    return app
+    try:
+        # create your application
+        app = faust.App(
+            'sofia',
+            autodiscover=False,
+            broker=broker,
+            broker_credentials=credentials,
+            topic_disable_leader=True,
+            consumer_auto_offset_reset='earliest'
+        )
+        return app
+    except ConnectionError as ce:
+        print(f'error connecting to kafka broker @ {broker} - {ce}')
+        exit(1) # exit as failed so the Docker environment can control restarts
 
 
 def remove_empty_lines(text_init):
@@ -58,7 +61,7 @@ def get_cdr_text(doc_id, cdr_api, sofia_user, sofia_pass):
         cdr_json = json.loads(response.text)
         return remove_empty_lines(cdr_json['extracted_text'])
     else:
-        print("Retrieving cdr failed. Please re-try.")
+        print(f'error getting CDR data from DART service: {response.status_code} : {response.text}')
         return None
 
 
