@@ -174,6 +174,7 @@ class SOFIA:
         if not exists(f'sofia/data/{experiment}_output'):
             makedirs(f'sofia/data/{experiment}_output')
         try:
+            print('get_online_output')
             annotations = self.annotate(text)
             data_extractor = DataExtractor(annotations)
             output = self.get_output(data_extractor, file_name, scoring=scoring)
@@ -191,6 +192,7 @@ class SOFIA:
 
 
     def annotate(self, text, save= False, file_name= 'trial'):
+        print('annotate')
         annotations = self.CoreNLPclient.annotate(text, output_format='json')
         #annotations = self.CoreNLPclient.annotate(text)
         self.entityIndex = 0

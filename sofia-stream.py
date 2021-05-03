@@ -10,8 +10,6 @@ import faust
 import requests
 from requests.auth import HTTPBasicAuth
 
-from mode import Worker
-
 from sofia import *
 
 
@@ -47,6 +45,7 @@ def remove_empty_lines(text_init):
 
 
 def get_cdr_text(doc_id, cdr_api, sofia_user, sofia_pass):
+    print('get_cdr_text')
     url = f'{cdr_api}/{doc_id}'
 
     http_auth = None
@@ -64,6 +63,7 @@ def get_cdr_text(doc_id, cdr_api, sofia_user, sofia_pass):
 
 
 def upload_sofia_output(doc_id, file, output_api, sofia_user, sofia_pass):
+    print('upload_sofia_output')
     metadata = {
         "identity": "sofia",
         "version": "1.1",
@@ -84,16 +84,6 @@ def upload_sofia_output(doc_id, file, output_api, sofia_user, sofia_pass):
         print(f"Uploading of {doc_id} failed! Please re-try")
 
 
-def exit_on_connect_failure():
-    default = Worker._shutdown_loop
-
-    def exit_on_fail(self):
-        try:
-            default(self)
-        finally:
-            exit(1)
-
-
 def run_sofia_stream(kafka_broker,
                      upload_api,
                      cdr_api,
@@ -104,8 +94,6 @@ def run_sofia_stream(kafka_broker,
                      version='v1'):
     sofia = SOFIA(ontology)
 
-    # weirdness with faust in docker: https://github.com/robinhood/faust/issues/484#issue-531534054
-    exit_on_connect_failure()
     app = create_kafka_app(kafka_broker, sofia_user, sofia_pass)
     dart_update_topic = app.topic("dart.cdr.streaming.updates", key_type=str, value_type=str)
 
