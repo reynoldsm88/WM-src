@@ -123,4 +123,4 @@ if __name__ == '__main__':
     _experiment = os.environ.get('EXPERIMENT') if os.environ.get('EXPERIMENT') is not None else f'test-{datetime_slug}'
     _version = os.environ.get('VERSION') if os.environ.get('VERSION') is not None else 'v1'
 
-    run_sofia_stream(_kafka_broker, _upload_api, _cdr_api, _sofia_user, _sofia_pass, _experiment, _version)
+    run_sofia_stream(_kafka_broker, _upload_api, _cdr_api, _sofia_user, _sofia_pass, _ontology, _experiment, _version)
