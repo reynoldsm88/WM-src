@@ -114,13 +114,13 @@ def run_sofia_stream(kafka_broker,
 
 if __name__ == '__main__':
     datetime_slug = datetime.now().strftime("%m/%d/%Y-%H:%M:%S")
-    _kafka_broker = os.environ.get('KAFKA_BROKER') if os.environ.get('KAFKA_BROKER') is not None else 'localhost:9092'
-    _upload_api = os.environ.get('UPLOAD_API_URL') if os.environ.get('UPLOAD_API_URL') is not None else 'localhost:1337'
-    _cdr_api = os.environ.get('CDR_API_URL') if os.environ.get('CDR_API_URL') is not None else 'localhost:8090'
-    _sofia_user = os.environ.get('SOFIA_USER')
-    _sofia_pass = os.environ.get('SOFIA_PASS')
-    _ontology = os.environ.get('ONTOLOGY') if os.environ.get('ONTOLOGY') is not None else 'compositional'
-    _experiment = os.environ.get('EXPERIMENT') if os.environ.get('EXPERIMENT') is not None else f'test-{datetime_slug}'
-    _version = os.environ.get('VERSION') if os.environ.get('VERSION') is not None else 'v1'
+    _kafka_broker = os.getenv('KAFKA_BROKER') if os.getenv('KAFKA_BROKER') is not None else 'localhost:9092'
+    _upload_api = os.getenv('UPLOAD_API_URL') if os.getenv('UPLOAD_API_URL') is not None else 'localhost:1337'
+    _cdr_api = os.getenv('CDR_API_URL') if os.getenv('CDR_API_URL') is not None else 'localhost:8090'
+    _sofia_user = os.getenv('SOFIA_USER')
+    _sofia_pass = os.getenv('SOFIA_PASS')
+    _ontology = os.getenv('ONTOLOGY') if os.getenv('ONTOLOGY') is not None else 'compositional'
+    _experiment = os.getenv('EXPERIMENT') if os.getenv('EXPERIMENT') is not None else f'test-{datetime_slug}'
+    _version = os.getenv('VERSION') if os.getenv('VERSION') is not None else 'v1'
 
     run_sofia_stream(_kafka_broker, _upload_api, _cdr_api, _sofia_user, _sofia_pass, _ontology, _experiment, _version)
