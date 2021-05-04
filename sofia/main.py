@@ -192,9 +192,9 @@ class SOFIA:
 
 
     def annotate(self, text, save= False, file_name= 'trial'):
-        print('call: annotate')
+        print('call: CoreNLPclient.annotate')
         annotations = self.CoreNLPclient.annotate(text, output_format='json')
-        #annotations = self.CoreNLPclient.annotate(text)
+        print('finsh: CoreNLPclient.annotate')
         self.entityIndex = 0
         self.eventIndex = 0
         self.variableIndex = 0
