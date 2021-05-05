@@ -64,6 +64,7 @@ class SOFIA:
         if os.getenv('CORENLP_HOME') is not None and os.getenv('CORENLP_HOME') != '':
             print(f'using Stanford CoreNLP Server @ {os.getenv("CORENLP_HOME")}')
             self.CoreNLPclient = corenlp.CoreNLPClient( start_server=True,
+                                                        be_quiet=False,
                                                         annotators=['tokenize',
                                                                    'ssplit',
                                                                    'pos',
