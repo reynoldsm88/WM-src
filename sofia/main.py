@@ -46,7 +46,7 @@ class SOFIA:
        The final line writes this output to an Excel file at the user specified path.
     """
 
-    def __init__(self, ontology, CoreNLP='/Users/evangeliaspiliopoulou/Desktop/stanfordCoreNLP'):
+    def __init__(self, ontology):
         self.causal_headers = ["Source_File", 'Query', "Score",  "Span", "Relation Index", "Relation", "Relation_Type",
                                "Indicator", "Cause Index", "Cause", "Effect Index", "Effect", "Sentence"]
         self.event_headers = ["Source_File", 'Query', "Score", "Event Index", "Span", "Sentence Span","Relation", "Event_Type",
@@ -60,14 +60,19 @@ class SOFIA:
         self.variable_index = 0
         self.causal_index = 0
         self.ontology = ontology
-        os.environ['CORENLP_HOME'] = CoreNLP
-        self.CoreNLPclient = corenlp.CoreNLPClient(annotators=['tokenize',
-                                                               'ssplit',
-                                                               'pos',
-                                                               'parse',
-                                                               'lemma',
-                                                               'ner',
-                                                               'depparse'])
+
+        if os.getenv('CORENLP_HOME') is not None and os.getenv('CORENLP_HOME') != '':
+            print(f'using Stanford CoreNLP Server @ {os.getenv("CORENLP_HOME")}')
+            self.CoreNLPclient = corenlp.CoreNLPClient( start_server=True,
+                                                        annotators=['tokenize',
+                                                                   'ssplit',
+                                                                   'pos',
+                                                                   'parse',
+                                                                   'lemma',
+                                                                   'ner',
+                                                                   'depparse'])
+        else:
+            raise ValueError('the "CORENLP_HOME" environment variable is not set, cannot run Stanford CoreNLP Server')
 
     def get_output(self, data_extractor, file_name, scoring = False):
         output = []
