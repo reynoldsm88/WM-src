@@ -72,6 +72,7 @@ class SOFIA:
                                                                    'lemma',
                                                                    'ner',
                                                                    'depparse'])
+            self.CoreNLPclient.annotate("hello world") # warmup the CoreNLP client and start the java server
         else:
             raise ValueError('the "CORENLP_HOME" environment variable is not set, cannot run Stanford CoreNLP Server')
 
