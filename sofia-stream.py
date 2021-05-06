@@ -7,6 +7,7 @@ from datetime import datetime
 from os.path import basename
 
 import faust
+import nltk
 import requests
 from nltk.tokenize import sent_tokenize
 from requests.auth import HTTPBasicAuth
@@ -119,6 +120,7 @@ def run_sofia_stream(kafka_broker,
                      ontology,
                      experiment,
                      version):
+    nltk.download('punkt')
     sofia = SOFIA(ontology)
 
     app = create_kafka_app(kafka_broker, sofia_user, sofia_pass)
