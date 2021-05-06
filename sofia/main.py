@@ -193,6 +193,7 @@ class SOFIA:
 
             output_file = open(f'sofia/data/{experiment}_output/{file_name}.json', 'w')
             json.dump(data, output_file)
+            output_file.close()
             return output_file
         except Exception as e:
             print(e)
