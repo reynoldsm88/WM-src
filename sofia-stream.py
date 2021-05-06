@@ -4,10 +4,8 @@ import json
 import os
 import ssl
 from datetime import datetime
-from os.path import basename
 
 import faust
-import nltk
 import requests
 from nltk.tokenize import sent_tokenize
 from requests.auth import HTTPBasicAuth
@@ -30,8 +28,7 @@ def create_kafka_app(broker, user, pwd):
         autodiscover=False,
         broker=broker,
         broker_credentials=credentials,
-        topic_disable_leader=True,
-        consumer_auto_offset_reset='earliest')
+        topic_disable_leader=True)
 
     return app
 

@@ -1,21 +1,21 @@
-from sofia.event_extraction import CandidateEvents
-from sofia.causal_extraction import CausalLinks
-from sofia.ontology_mapping import Ontology
-from sofia.query_search import QueryFinder
-from sofia.corenlp_parse import DataExtractor
+import json
 # from event_extraction import CandidateEvents
 # from causal_extraction import CausalLinks
 # from ontology_mapping import Ontology
 # from query_search import QueryFinder
 # from corenlp_parse import DataExtractor
 import os
-import json
-import pdb
+from os import makedirs
+from os.path import exists
+
 import corenlp
 import pandas as pd
-import argparse
-from os.path import exists
-from os import makedirs
+
+from sofia.causal_extraction import CausalLinks
+from sofia.corenlp_parse import DataExtractor
+from sofia.event_extraction import CandidateEvents
+from sofia.ontology_mapping import Ontology
+from sofia.query_search import QueryFinder
 
 
 def span_to_index(local_index, span_list):
