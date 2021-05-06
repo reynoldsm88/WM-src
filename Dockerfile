@@ -23,6 +23,7 @@ RUN chmod -R u+x /opt/app/bin && \
     pip3 install -r requirements.txt
 
 COPY distro/stanford-corenlp-4.2.0.zip /opt/app/pkg
+COPY distro/nltk_data /root/nltk_data
 
 RUN yum install -y unzip && \
     unzip /opt/app/pkg/stanford-corenlp-4.2.0.zip -d /opt/app/pkg/ && \
