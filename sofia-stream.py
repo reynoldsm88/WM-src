@@ -120,7 +120,6 @@ def run_sofia_stream(kafka_broker,
                      ontology,
                      experiment,
                      version):
-    nltk.download('punkt')
     sofia = SOFIA(ontology)
 
     app = create_kafka_app(kafka_broker, sofia_user, sofia_pass)
@@ -142,6 +141,7 @@ def run_sofia_stream(kafka_broker,
 
 
 if __name__ == '__main__':
+    nltk.download('punkt')
     datetime_slug = datetime.now().strftime("%m/%d/%Y-%H:%M:%S")
     _kafka_broker = os.getenv('KAFKA_BROKER') if os.getenv('KAFKA_BROKER') is not None else 'localhost:9092'
     _upload_api = os.getenv('UPLOAD_API_URL') if os.getenv('UPLOAD_API_URL') is not None else 'localhost:1337'
