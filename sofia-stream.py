@@ -8,6 +8,7 @@ from os.path import basename
 
 import faust
 import requests
+from nltk.tokenize import sent_tokenize
 from requests.auth import HTTPBasicAuth
 
 from sofia import *
@@ -44,6 +45,32 @@ def remove_empty_lines(text_init):
     return '\n'.join(new_lines)
 
 
+def clean_text(text_init):
+    text_init = remove_empty_lines(text_init)
+    sentences = sent_tokenize(text_init)
+    text = ""
+    for sentence in sentences:
+        for letter in sentence:
+            if ord(letter) < 128:
+                if letter != '\n':
+                    text += letter
+        if len(sentence) > 0 and sentence[-1] != '.':
+            text += '.'
+        text += '\n'
+    lines = text.split('\n')
+    text_final = ""
+    for line in lines:
+        line = line.strip('\n')
+        sentence = line.strip(' ')
+        if len(sentence.split(' ')) > 30:
+            if '\n' in sentence:
+                i = sentence.index('\n')
+                text_final += sentence[:i] + '. ' + sentence[i:]
+        elif len(sentence.split(' ')) > 4:
+            text_final += sentence + '\n'
+    return text_final
+
+
 def get_cdr_text(doc_id, cdr_api, sofia_user, sofia_pass):
     print('get_cdr_text')
     url = f'{cdr_api}/{doc_id}'
@@ -56,7 +83,7 @@ def get_cdr_text(doc_id, cdr_api, sofia_user, sofia_pass):
 
     if response.status_code == 200:
         cdr_json = json.loads(response.text)
-        return remove_empty_lines(cdr_json['extracted_text'])
+        return clean_text(cdr_json['extracted_text'])
     else:
         print(f'error getting CDR data from DART service: {response.status_code} : {response.text}')
         return None
