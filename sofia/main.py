@@ -65,6 +65,7 @@ class SOFIA:
             print(f'using Stanford CoreNLP Server @ {os.getenv("CORENLP_HOME")}')
             self.CoreNLPclient = corenlp.CoreNLPClient( start_server=True,
                                                         be_quiet=False,
+                                                        timeout=150000,
                                                         annotators=['tokenize',
                                                                    'ssplit',
                                                                    'pos',
