@@ -90,7 +90,7 @@ def get_cdr_text(doc_id, cdr_api, sofia_user, sofia_pass):
         return None
 
 
-def upload_sofia_output(doc_id, file, output_api, sofia_user, sofia_pass):
+def upload_sofia_output(doc_id, output_filename, output_api, sofia_user, sofia_pass):
     print('upload_sofia_output')
     metadata = {
         "identity": "sofia",
@@ -98,7 +98,7 @@ def upload_sofia_output(doc_id, file, output_api, sofia_user, sofia_pass):
         "document_id": doc_id
     }
 
-    form_request = {"file": (basename(file.name), file), "metadata": (None, json.dumps(metadata), 'application/json')}
+    form_request = {"file": (output_filename, open(output_filename)), "metadata": (None, json.dumps(metadata), 'application/json')}
 
     http_auth = None
     if sofia_user is not None and sofia_pass is not None:
@@ -141,7 +141,6 @@ def run_sofia_stream(kafka_broker,
 
 
 if __name__ == '__main__':
-    nltk.download('punkt')
     datetime_slug = datetime.now().strftime("%m/%d/%Y-%H:%M:%S")
     _kafka_broker = os.getenv('KAFKA_BROKER') if os.getenv('KAFKA_BROKER') is not None else 'localhost:9092'
     _upload_api = os.getenv('UPLOAD_API_URL') if os.getenv('UPLOAD_API_URL') is not None else 'localhost:1337'
