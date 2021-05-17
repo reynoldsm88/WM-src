@@ -15,7 +15,7 @@ import enchant
 
 from sofia import *
 
-d = enchant.Dict("en_US")
+lang_encoding_dict = enchant.Dict("en_US")
 
 def create_kafka_app(broker, user, pwd):
     credentials = None
@@ -48,7 +48,7 @@ def remove_empty_lines(text_init):
         if len(res_line.split()) > 5 and len(res_line.split())<30:
             num_english= 0
             for i in res_line.split():
-                if d.check(i):
+                if lang_encoding_dict.check(i):
                     num_english+=1
             if len(res_line.split())-num_english<2:
                 new_lines.append(line)
@@ -82,7 +82,6 @@ def clean_text(text_init):
 
 
 def get_cdr_text(doc_id, cdr_api, sofia_user, sofia_pass):
-    print('get_cdr_text')
     url = f'{cdr_api}/{doc_id}'
 
     http_auth = None
@@ -100,7 +99,6 @@ def get_cdr_text(doc_id, cdr_api, sofia_user, sofia_pass):
 
 
 def upload_sofia_output(doc_id, output_filename, upload_api, sofia_user, sofia_pass):
-    print('upload_sofia_output')
     metadata = {
         "identity": "sofia",
         "version": "1.1",
