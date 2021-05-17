@@ -3,6 +3,7 @@
 import json
 import os
 import ssl
+import re
 from datetime import datetime
 
 import faust
@@ -10,8 +11,11 @@ import requests
 from nltk.tokenize import sent_tokenize
 from requests.auth import HTTPBasicAuth
 
+import enchant
+
 from sofia import *
 
+d = enchant.Dict("en_US")
 
 def create_kafka_app(broker, user, pwd):
     credentials = None
@@ -76,31 +80,6 @@ def clean_text(text_init):
             text_final += sentence + '\n'
     return text_final
 
-def clean_text(text_init):
-    text_init = remove_empty_lines(text_init)
-    sentences = sent_tokenize(text_init)
-    text = ""
-    for sentence in sentences:
-        for letter in sentence:
-            if ord(letter) < 128:
-                if letter != '\n':
-                    text += letter
-        if len(sentence) > 0 and sentence[-1] != '.':
-            text += '.'
-        text += '\n'
-    lines = text.split('\n')
-    text_final = ""
-    for line in lines:
-        line = line.strip('\n')
-        sentence = line.strip(' ')
-        if len(sentence.split(' ')) > 30:
-            if '\n' in sentence:
-                i = sentence.index('\n')
-                text_final += sentence[:i] + '. ' + sentence[i:]
-        elif len(sentence.split(' ')) > 4:
-            text_final += sentence + '\n'
-    return text_final
-
 
 def get_cdr_text(doc_id, cdr_api, sofia_user, sofia_pass):
     print('get_cdr_text')
@@ -120,7 +99,7 @@ def get_cdr_text(doc_id, cdr_api, sofia_user, sofia_pass):
         return None
 
 
-def upload_sofia_output(doc_id, output_filename, output_api, sofia_user, sofia_pass):
+def upload_sofia_output(doc_id, output_filename, upload_api, sofia_user, sofia_pass):
     print('upload_sofia_output')
     metadata = {
         "identity": "sofia",
@@ -137,7 +116,7 @@ def upload_sofia_output(doc_id, output_filename, output_api, sofia_user, sofia_p
     response = requests.post(upload_api, files=form_request, auth=http_auth)
 
     if response.status_code == 201:
-        print("File uploaded!")
+        print( f'uploaded - {output_filename} for doc {doc_id}')
     else:
         print(f"Uploading of {doc_id} failed! Please re-try")
 
@@ -161,7 +140,6 @@ def run_sofia_stream(kafka_broker,
         async for cdr_event in doc_stream:
             doc_id = cdr_event.key
             extracted_text = get_cdr_text(doc_id, cdr_api, sofia_user, sofia_pass)
-            print("process_document -> main loop")
             if extracted_text is not None:
                 output = sofia.get_online_output(extracted_text, experiment=experiment, file_name=f'{doc_id}_{version}')
                 if output is not None:
